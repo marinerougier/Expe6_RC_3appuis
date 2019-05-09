@@ -322,6 +322,40 @@
         },
     };
 
+    var languageOptions = ['Fluently', 'Very good', 'Good', 'Average', 'Bad', 'Very bad'];
+    var language = {
+        type: 'survey-multi-choice',
+        questions: [{ prompt: "How well do you speak english?", options: languageOptions, required: true }],
+        button_label: "continue",
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                language: JSON.parse(data.responses).Q0,
+            });
+            console.log(data);
+        },
+    };
+
+    var Prolific_reported = {
+        timeline: [{
+            type: 'survey-text',
+            questions: [{ prompt: 'Please indicate your Prolific ID:', rows: 3, columns: 60 }],
+            button_label: "continue",
+        }],
+        loop_function: function (data) {
+            var res = data.values()[0].responses;
+            var res = JSON.parse(res).Q0;
+            if (res == "") {
+                alert("Please answer the question");
+                return true;
+            }
+        },
+        on_finish: function (data) {
+            jsPsych.data.addProperties({
+                Prolific_reported: JSON.parse(data.responses).Q0,
+            });
+        },
+    };
+
     var implicit = {
         timeline: [{
             type: 'survey-text',
@@ -474,6 +508,8 @@
     timeline.push(RC2);
     timeline.push(gender);
     timeline.push(age);
+    timeline.push(language);
+    timeline.push(Prolific_reported);
     timeline.push(implicit);
     timeline.push(goal);
     timeline.push(likingGrp);
